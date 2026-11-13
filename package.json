@@ -1,0 +1,17 @@
+{
+  "name": "oshxona",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Telegram Mini App — ishxona oshxonasi uchun kunlik ovqat hisobi (Cloudflare Workers + D1 + KV)",
+  "scripts": {
+    "build": "npm --prefix app run build",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node tests/hammasi.mjs",
+    "migrate": "wrangler d1 migrations apply oshxona --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

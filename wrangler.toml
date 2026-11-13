@@ -1,0 +1,42 @@
+#  Ошхона — Cloudflare Worker созламаси.
+#
+#  ⚠️  Қуйидаги ҳамма id — СОХТА (намуна). Ўзингизда ишлатиш учун
+#      ўз Cloudflare аккаунтингизнинг id ларига алмаштиринг:
+#        npx wrangler kv namespace create ACCESS_KV
+#        npx wrangler d1 create oshxona
+#      BOT_TOKEN эса файлга ЁЗИЛМАЙДИ — secret:
+#        npx wrangler secret put BOT_TOKEN
+
+name = "oshxona"
+main = "src/worker.js"
+compatibility_date = "2024-11-01"
+
+# Деплойдан олдин мини апп қурилади (app/dist/app га тушади)
+[build]
+command = "npm --prefix app run build"
+
+[[kv_namespaces]]
+binding = "ACCESS_KV"
+id = "00000000000000000000000000000000"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "oshxona"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[assets]
+directory = "app/dist"
+binding = "ASSETS"
+run_worker_first = true
+
+[vars]
+# Эслатма хабаридаги тугма шу ҳаволани очади (охиридаги / шарт)
+APP_URL = "https://oshxona.example.workers.dev/app/"
+
+# Вақтлар UTC: Тошкент = UTC+5
+#   «0,20,30 4» → 09:00 / 09:20 / 09:30 — эслатма, 3 босқич (фақат белгиламаганларга)
+#   «45 4»      → 09:45 — якун: босмаганлар «емайди», ошпазга якуний сон
+#   «50 4»      → 09:50 — ЗАХИРА: 09:45 да хабар кетмаган бўлса яна уринади
+[triggers]
+crons = ["0,20,30 4 * * *", "45 4 * * *", "50 4 * * *"]

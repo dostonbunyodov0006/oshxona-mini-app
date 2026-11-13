@@ -1,0 +1,8 @@
+# Lokal ishga tushirish uchun (`wrangler dev`) — bu faylni `.dev.vars` deb
+# nusxalab, o'z botingizning tokenini qo'ying. `.dev.vars` git'ga TUSHMAYDI.
+#
+# Token @BotFather dan olinadi. Pastdagi qiymat — SOXTA namuna.
+BOT_TOKEN="123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# Ishga tushirilgandan keyin serverda secret sifatida saqlanadi:
+#   npx wrangler secret put BOT_TOKEN

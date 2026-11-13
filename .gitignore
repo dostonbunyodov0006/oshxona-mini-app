@@ -1,0 +1,13 @@
+node_modules/
+app/node_modules/
+app/dist/
+.wrangler/
+dist/
+
+# 🔐 BOT_TOKEN shu faylda turadi — hech qachon git'ga tushmasin
+.dev.vars
+.env
+.env.*
+
+*.log
+.DS_Store
