@@ -30,6 +30,9 @@ ham, «Емайман» bosganga ham bormaydi. Yakshanba — dam olish kuni.
   keyingi hafta dushanbasidan boshlanadi, o'tgan kunlar hisobi o'zgarmaydi.
 - **Kechki ovqat** — faqat ko'rishga ruxsati bor xodimlarga ko'rinadi.
 - **«Kim yeydi»** — oshpaz sondagi raqamga bossa, ismlar ro'yxati chiqadi.
+- **Ikkinchi akkaunt** — bir odamning ikkita Telegram akkaunti bo'lsa, eslatma
+  ikkisiga ham boradi va ikkisidan ham belgilay oladi, lekin hisobda **bitta**
+  bo'ladi (ovoz doim asosiy akkaunt nomiga yoziladi).
 - **Xabar o'zini yangilaydi** — 09:45 dan keyin son o'zgarsa (kechikkan ovoz
   qo'lda qo'shilsa), oshpazga yangi xabar yuborilmaydi: o'sha xabarning o'zi
   tahrirlanadi, oshpazda eski son qolib ketmaydi.
@@ -124,7 +127,7 @@ ko'rsatasiz.
 npm test
 ```
 
-49 ta tekshiruv: sana/hafta hisobi, 09:45 yopilishi, rollar, 3 bosqichli
+58 ta tekshiruv: sana/hafta hisobi, 09:45 yopilishi, rollar, 3 bosqichli
 eslatma matni, `initData` imzosi (buzilgan imzo o'tmasligi ham).
 
 ---

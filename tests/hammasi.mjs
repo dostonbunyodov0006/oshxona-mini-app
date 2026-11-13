@@ -111,6 +111,24 @@ C("кечкини кўрадиганга иккиси ҳам", (() => {
 C("appHavola: ?bolim=ovqat", E.appHavola({ APP_URL: "https://x.dev/app" }, "ovqat") === "https://x.dev/app/?bolim=ovqat",
   E.appHavola({ APP_URL: "https://x.dev/app" }, "ovqat"));
 
+console.log("\n── 5.1 👥 Иккинчи аккаунт ──");
+{
+  const ASOSIY = 100000009, IKKINCHI = 100000023;      // Дилшод ака ва унинг 2-аккаунти
+  const CFG2 = { ...CFG, ishchi: [...CFG.ishchi, ASOSIY] };
+  C("asosiyUid: иккинчи аккаунт → асосийси", R.asosiyUid(IKKINCHI) === ASOSIY);
+  C("asosiyUid: асосий аккаунт — ўзи", R.asosiyUid(ASOSIY) === ASOSIY);
+  C("asosiyUid: бошқа одамга тегмайди", R.asosiyUid(100000001) === 100000001);
+  C("akkauntlar: иккита қайтади (эслатма иккисига боради)",
+    JSON.stringify([...R.akkauntlar(ASOSIY)].sort()) === JSON.stringify([ASOSIY, IKKINCHI].sort()),
+    JSON.stringify(R.akkauntlar(ASOSIY)));
+  C("akkauntlar: иккинчисидан сўралса ҳам ўша иккита", R.akkauntlar(IKKINCHI).length === 2);
+  C("akkauntlar: оддий одамда битта", R.akkauntlar(100000001).length === 1);
+  // Иккинчи аккаунтнинг иловада ошхона роли ЙЎҚ — барибир белгилай олади
+  C("иккинчи аккаунтдан тушликни белгилай олади", R.ovozBeraOladimi(IKKINCHI, new Set(), "t", CFG2));
+  C("иккинчи аккаунтдан кечкини белгилай олмайди", !R.ovozBeraOladimi(IKKINCHI, new Set(), "k", CFG2));
+  C("бегона одам белгилай олмайди", !R.ovozBeraOladimi(555000111, new Set(), "t", CFG2));
+}
+
 console.log("\n── 6. Ошпаз хабари ──");
 C("oshpazMatni: кун номи ва сонлар", (() => {
   const t = Y.oshpazMatni("2026-09-14", { tushlik: 9, kechki: 1 });

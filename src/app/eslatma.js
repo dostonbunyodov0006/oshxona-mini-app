@@ -125,9 +125,12 @@ export async function eslatmaYubor(env, hozir = Date.now(), bosqich = 1) {
     } else { otkazildi++; console.warn("eslatma:", id, r && r.description); }
   };
 
+  // 👥 Иккита аккаунти бор одамга ИККИСИГА ҲАМ юборилади (rollar.js QOSHIMCHA_AKK).
+  // Овоз эса битта — қайси аккаунтдан белгиласа ҳам асосий uid га ёзилади
+  // (api.js → R.asosiyUid), шу сабаб икки марта саналмайди.
   for (const id of kerak) {
-    await yubor(id, ishchiMatni(menyu, R.ujinKoradimi(id, null, rollar), R.faqatUjinmi(id, rollar), bosqich),
-                "🍽 Белгилаш", "ovqat");
+    const text = ishchiMatni(menyu, R.ujinKoradimi(id, null, rollar), R.faqatUjinmi(id, rollar), bosqich);
+    for (const akk of R.akkauntlar(id)) await yubor(akk, text, "🍽 Белгилаш", "ovqat");
   }
   await env.ACCESS_KV.put(XABAR(sana), JSON.stringify(yangi), { expirationTtl: 3 * 86400 });
 

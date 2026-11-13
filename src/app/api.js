@@ -39,6 +39,9 @@ function rollarniHisobla(uid, cfg) {
   if (ichida(cfg.developer)) r.add("developer");
   if (ichida(cfg.superadmin)) r.add("superadmin");
   if (ichida(cfg.testers)) r.add("tester");
+  // 👥 Иккинчи аккаунт (rollar.js QOSHIMCHA_AKK): асосий аккаунт ошхона ишчиси бўлса,
+  // иккинчисига ҳам ФАҚАТ «ishchi» берилади — овқатни шундан ҳам белгилай олсин.
+  if (R.asosiyUid(uid) !== Number(uid) && (cfg.ishchi || []).includes(R.asosiyUid(uid))) r.add("ishchi");
   return R.yakuniyRollar(uid, r, cfg);
 }
 
@@ -87,8 +90,9 @@ export async function apiIshla(request, env) {
     const [ovozlar, menyu] = await Promise.all([O.ovozlarOl(env, sana), O.menyuOl(env, O.haftaKod(sana))]);
     const k = O.jamla(sana, ovozlar);
     const bugungi = menyu.menyu[sana] || null;
+    // 👥 Овоз АСОСИЙ аккаунт uid'и остида туради — иккинчи аккаунтдан кирганда ҳам ўша кўринади
     const men = (m) => {
-      const x = ovozlar.find((o) => Number(o.uid) === uid && o.m === m);
+      const x = ovozlar.find((o) => Number(o.uid) === R.asosiyUid(uid) && o.m === m);
       return x ? x.t : null;
     };
     return json({
@@ -114,7 +118,9 @@ export async function apiIshla(request, env) {
     if (!R.ovozBeraOladimi(uid, rollar, m, cfg)) return xato("Сиз овоз берувчилар рўйхатида йўқсиз", 403);
     const sana = f && f.sana ? String(f.sana) : null;
     if (sana && !O.sanaMi(sana)) return xato("сана нотўғри");
-    return natija(await O.ovozYoz(env, uid, f, { ujin, sana }));
+    // 👥 Иккинчи аккаунтдан келса ҳам овоз АСОСИЙ uid га ёзилади — битта одам, битта овоз.
+    // Шу сабаб иккала аккаунтдан белгилаш бир-бирини янгилайди, қўшилмайди.
+    return natija(await O.ovozYoz(env, R.asosiyUid(uid), f, { ujin, sana }));
   }
 
   // ---------- ҳисоб ----------

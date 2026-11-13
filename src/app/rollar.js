@@ -77,6 +77,25 @@ const ASOS = {
 
 const asosli = (nom, kv) => L([...(ASOS[nom] || []), ...(Array.isArray(kv) ? kv : [])]);
 
+/* 👥 ИККИНЧИ АККАУНТЛАР
+   Бир одамнинг иккита Telegram аккаунти бўлса (иккита телефон) — ИККИСИГА ҲАМ
+   эслатма боради, ИККИСИДАН ҲАМ белгилай олади, лекин ҲИСОБДА БИТТА бўлади:
+   «ҳоҳласа у аккаунтдан, ҳоҳласа бу аккаунтдан кириб белгилаб юрсин».
+
+   Калит — ИККИНЧИ аккаунт, қиймат — АСОСИЙси. Иккинчи аккаунт `ishchi`
+   рўйхатига ҚЎШИЛМАЙДИ — шунда 09:45 якунида ҳам, ошпазнинг сонида ҳам
+   икки марта саналиши МУМКИН ЭМАС. Овоз доим АСОСИЙ uid га ёзилади.      */
+export const QOSHIMCHA_AKK = { 100000023: 100000009 };   // намуна: Дилшод аканинг 2-аккаунти
+
+/** Иккинчи аккаунтдан кирилган бўлса — асосий uid ни қайтаради */
+export const asosiyUid = (uid) => QOSHIMCHA_AKK[Number(uid)] || Number(uid);
+
+/** Шу одамнинг ҲАММА аккаунти: [асосий, ...иккинчилари] — эслатма ҳаммасига боради */
+export function akkauntlar(uid) {
+  const a = asosiyUid(uid);
+  return [a, ...Object.keys(QOSHIMCHA_AKK).map(Number).filter((k) => asosiyUid(k) === a)];
+}
+
 /** Рўйхат: cfg (rollarOl натижаси) берилса — ундан, бўлмаса — коддаги асос */
 const ro = (cfg, k) => ((cfg && Array.isArray(cfg[k])) ? cfg[k] : (ASOS[k] || [])).map(Number);
 
@@ -95,11 +114,16 @@ export const ujinKoradimi = (uid, rollar, cfg) =>
  *   • кечки — фақат кечкини кўрадиганлар;
  *   • «фақат кечки» одамга тушлик тугмаси йўқ.                        */
 export function ovozBeraOladimi(uid, rollar, m, cfg) {
+  // 👥 Иккинчи аккаунтдан кирилса — ҳамма текширув АСОСИЙ аккаунт бўйича
+  const id = asosiyUid(uid);
   const has = (r) => Boolean(rollar && rollar.has && rollar.has(r));
-  if (has("oshpaz") || ro(cfg, "cook").includes(Number(uid))) return false;
-  if (!has("ishchi") && !has("admin")) return false;
-  if (m === "t" && faqatUjinmi(uid, cfg)) return false;
-  return m === "k" ? ujinOvoz(uid, cfg) : m === "t";
+  // Иккинчи аккаунтнинг иловадаги роли ўзига тегишли — шу сабаб ошхона
+  // рўйхатидан асосий аккаунт бўйича ҳам текширилади
+  const ishchimi = has("ishchi") || (id !== Number(uid) && ro(cfg, "ishchi").includes(id));
+  if (has("oshpaz") || ro(cfg, "cook").includes(id)) return false;
+  if (!ishchimi && !has("admin")) return false;
+  if (m === "t" && faqatUjinmi(id, cfg)) return false;
+  return m === "k" ? ujinOvoz(id, cfg) : m === "t";
 }
 
 /** Бригадирга илова фақат «Бригадир» бўлимини кўрсатади (ичида Ошхона) */
